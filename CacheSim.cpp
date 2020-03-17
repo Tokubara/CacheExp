@@ -31,7 +31,7 @@ CacheSim::CacheSim() {}
 /**@arg a_cache_size[] 多级cache的大小设置
  * @arg a_cache_line_size[] 多级cache的line size（block size）大小
  * @arg a_mapping_ways[] 组相连的链接方式*/
-
+//?为什么这里不用实现好的?
 _u32 CacheSim::pow_int(int base, int expontent) {
     _u32 sum = 1;
     for (int i = 0; i < expontent; i++) {
@@ -128,9 +128,10 @@ CacheSim::~CacheSim() {
 int CacheSim::cache_check_hit(_u64 set_base, _u64 addr) {
     /**循环查找当前set的所有way（line），通过tag匹配，查看当前地址是否在cache中*/
     _u64 i;
+    _u64 tag = addr >> (cache_set_shifts + cache_line_shifts);
     for (i = 0; i < cache_mapping_ways; ++i) {
         if ((caches[set_base + i].flag & CACHE_FLAG_VALID) &&
-            (caches[set_base + i].tag == ((addr >> (cache_set_shifts + cache_line_shifts))))) {
+            (caches[set_base + i].tag == tag) {
             return i; //返回line在set内的偏移地址
         }
     }
@@ -202,6 +203,7 @@ void CacheSim::cache_insert(_u64 set_base, _u64 index, int a_swap_style) {
 
 /**获取当前set中可用的line，如果没有，就找到要被替换的块*/
 int CacheSim::cache_find_victim(_u64 set_base , int a_swap_style, int hit_index) {
+  //我得提醒，hit_index在这里的实现都还没出现过呢
     int free_index;//要替换的cache line
     _u64 min_FRU;
     _u64 max_LRU;
@@ -213,7 +215,7 @@ int CacheSim::cache_find_victim(_u64 set_base , int a_swap_style, int hit_index)
     }
 
     /**没有可用line，则执行替换算法*/
-    free_index = -1;
+//    free_index = -1; // 这句话是多余的
     switch (a_swap_style) {
         case CACHE_SWAP_RAND:
             free_index = rand() % cache_mapping_ways;
@@ -231,7 +233,7 @@ int CacheSim::cache_find_victim(_u64 set_base , int a_swap_style, int hit_index)
             min_FRU = get_ulonglong_max();
             for (_u64 j = 0; j < cache_mapping_ways; ++j) {
                 if (caches[set_base + j].FRU < min_FRU) {
-		            min_FRU = caches[set_base + j].FRU; 
+		                min_FRU = caches[set_base + j].FRU;
                     free_index = j;
                 }
             }
@@ -275,8 +277,7 @@ int CacheSim::cache_find_victim(_u64 set_base , int a_swap_style, int hit_index)
 /**返回这个set是否是sample set。*/
 int CacheSim::get_set_flag(_u64 set_base) {
     // size >> 10 << 5 = size * 32 / 1024 ，参照论文中的sample比例
-
-    int K = cache_set_size >> 5;
+    int K = cache_set_size >> 5;  //
     int log2K = (int) log2(K);
     int log2N = (int) log2(cache_set_size);
     // 使用高位的几位，作为筛选.比如需要32 = 2^5个，则用最高的5位作为mask
@@ -327,6 +328,7 @@ void CacheSim::dump_cache_set_info(_u64 set_base) {
 
 /**不需要分level*/
 void CacheSim::do_cache_op(_u64 addr, char oper_style) {
+  //仅仅是根据指令是读还是写
     _u64 set, set_base;
     int hit_index, free_index;
 
@@ -335,7 +337,7 @@ void CacheSim::do_cache_op(_u64 addr, char oper_style) {
     if (oper_style == OPERATION_WRITE) cache_w_count++;
 
     //normal cache and sample cache has the same set number
-    set = (addr >> cache_line_shifts) % cache_set_size; 
+    set = (addr >> cache_line_shifts) % cache_set_size;  //得到了组号
     set_base = set * cache_mapping_ways; //cache内set的偏移地址 0 8 16 ...
     hit_index = cache_check_hit(set_base, addr);//set内line的偏移地址 0-7
 
