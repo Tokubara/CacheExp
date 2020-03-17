@@ -1,3 +1,4 @@
-/Users/baiyunren/Desktop/计算机系统结构/实验project/CacheExpSrc/CMakeFiles/rebuild_cache.dir
-/Users/baiyunren/Desktop/计算机系统结构/实验project/CacheExpSrc/CMakeFiles/edit_cache.dir
-/Users/baiyunren/Desktop/计算机系统结构/实验project/CacheExpSrc/CMakeFiles/CacheSim.dir
+/Users/quebec/Documents/Project/cache_src/CacheExpSrc/CMakeFiles/rebuild_cache.dir
+/Users/quebec/Documents/Project/cache_src/CacheExpSrc/CMakeFiles/edit_cache.dir
+/Users/quebec/Documents/Project/cache_src/CacheExpSrc/CMakeFiles/test.dir
+/Users/quebec/Documents/Project/cache_src/CacheExpSrc/CMakeFiles/CacheSim.dir

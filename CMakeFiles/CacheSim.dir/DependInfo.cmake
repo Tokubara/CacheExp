@@ -4,8 +4,8 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/Users/baiyunren/Desktop/计算机系统结构/实验project/CacheExpSrc/CacheSim.cpp" "/Users/baiyunren/Desktop/计算机系统结构/实验project/CacheExpSrc/CMakeFiles/CacheSim.dir/CacheSim.cpp.o"
-  "/Users/baiyunren/Desktop/计算机系统结构/实验project/CacheExpSrc/main.cpp" "/Users/baiyunren/Desktop/计算机系统结构/实验project/CacheExpSrc/CMakeFiles/CacheSim.dir/main.cpp.o"
+  "/Users/quebec/Documents/Project/cache_src/CacheExpSrc/CacheSim.cpp" "/Users/quebec/Documents/Project/cache_src/CacheExpSrc/CMakeFiles/CacheSim.dir/CacheSim.cpp.o"
+  "/Users/quebec/Documents/Project/cache_src/CacheExpSrc/main.cpp" "/Users/quebec/Documents/Project/cache_src/CacheExpSrc/CMakeFiles/CacheSim.dir/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "AppleClang")
 

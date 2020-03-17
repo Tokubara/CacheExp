@@ -130,8 +130,7 @@ int CacheSim::cache_check_hit(_u64 set_base, _u64 addr) {
     _u64 i;
     _u64 tag = addr >> (cache_set_shifts + cache_line_shifts);
     for (i = 0; i < cache_mapping_ways; ++i) {
-        if ((caches[set_base + i].flag & CACHE_FLAG_VALID) &&
-            (caches[set_base + i].tag == tag) {
+        if ((caches[set_base + i].flag & CACHE_FLAG_VALID) && (caches[set_base + i].tag == tag)) {
             return i; //返回line在set内的偏移地址
         }
     }

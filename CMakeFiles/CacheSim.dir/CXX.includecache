@@ -6,9 +6,9 @@
 
 #IncludeRegexTransform: 
 
-/Users/baiyunren/Desktop/计算机系统结构/实验project/CacheExpSrc/CacheSim.cpp
+/Users/quebec/Documents/Project/cache_src/CacheExpSrc/CacheSim.cpp
 CacheSim.h
-/Users/baiyunren/Desktop/计算机系统结构/实验project/CacheExpSrc/CacheSim.h
+/Users/quebec/Documents/Project/cache_src/CacheExpSrc/CacheSim.h
 cstdlib
 -
 cstring
@@ -22,7 +22,7 @@ time.h
 climits
 -
 map
-/Users/baiyunren/Desktop/计算机系统结构/实验project/CacheExpSrc/map
+/Users/quebec/Documents/Project/cache_src/CacheExpSrc/map
 fstream
 -
 vector
@@ -32,9 +32,9 @@ algorithm
 string
 -
 
-/Users/baiyunren/Desktop/计算机系统结构/实验project/CacheExpSrc/CacheSim.h
+/Users/quebec/Documents/Project/cache_src/CacheExpSrc/CacheSim.h
 map
-/Users/baiyunren/Desktop/计算机系统结构/实验project/CacheExpSrc/map
+/Users/quebec/Documents/Project/cache_src/CacheExpSrc/map
 iostream
 -
 vector
@@ -45,38 +45,4 @@ list
 -
 unordered_map
 -
-
-/Users/baiyunren/Desktop/计算机系统结构/实验project/CacheExpSrc/argparse.hpp
-unordered_map
--
-map
--
-string
--
-vector
--
-typeinfo
--
-stdexcept
--
-sstream
--
-iostream
--
-cassert
--
-algorithm
--
-
-/Users/baiyunren/Desktop/计算机系统结构/实验project/CacheExpSrc/main.cpp
-iostream
--
-cstring
--
-stdlib.h
--
-CacheSim.h
-/Users/baiyunren/Desktop/计算机系统结构/实验project/CacheExpSrc/CacheSim.h
-argparse.hpp
-/Users/baiyunren/Desktop/计算机系统结构/实验project/CacheExpSrc/argparse.hpp
 
