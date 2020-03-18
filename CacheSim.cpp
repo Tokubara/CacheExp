@@ -273,16 +273,20 @@ int CacheSim::cache_find_victim(_u64 set_base , int a_swap_style, int hit_index)
     return free_index;
 }
 
-/**返回这个set是否是sample set。*/
+/**
+ * 返回使用哪一种RRIP，但和原算法还是不太一样，似乎没有complement？
+ * @param set_base 这里变量名起错了，应该是set
+ * @return 0的话，1的话，其它
+ */
 int CacheSim::get_set_flag(_u64 set_base) {
     // size >> 10 << 5 = size * 32 / 1024 ，参照论文中的sample比例
-    int K = cache_set_size >> 5;  //
-    int log2K = (int) log2(K);
-    int log2N = (int) log2(cache_set_size);
+    int K = cache_set_size >> 5;  //也就是选1/32为dedicate
+    int log2K = (int) log2(K);  //log2(N/K)是区号
+    int log2N = (int) log2(cache_set_size);  //总的
     // 使用高位的几位，作为筛选.比如需要32 = 2^5个，则用最高的5位作为mask
-    _u64 mask = pow_64(2, (_u64) (log2N - log2K)) - 1;
-    _u64 residual = set_base & mask;
-    return residual;
+    _u64 mask = pow_64(2, (_u64) (log2N - log2K)) - 1;  //可这不是最高位啊
+    _u64 residual = set_base & mask;  //set_base怎么这么奇怪呢？它不是总的？
+    return residual;  //5
 }
 
 double CacheSim::get_miss_rate() {
@@ -413,7 +417,7 @@ void CacheSim::do_cache_op(_u64 addr, char oper_style) {
                     }
                 }
             } else {
-                cache_w_memory_count++;
+                cache_w_memory_count++;  //与cache操作无关
             }
         }
     } else {
