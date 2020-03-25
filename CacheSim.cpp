@@ -173,6 +173,7 @@ void CacheSim::cache_hit(_u64 set_base, _u64 index, int a_swap_style) {
       }
       break;
     case CACHE_SWAP_MINE:
+//      cout << (set_base>>5) << endl;
       lirs[(set_base >> 5)].hit(caches[set_base + index].tag);
       break;
   }
@@ -203,6 +204,7 @@ void CacheSim::cache_insert(_u64 set_base, _u64 index, int a_swap_style) {
       caches[set_base + index].RRPV = (rand_num > EPSILON) ? SRRIP_2_M_1 : SRRIP_2_M_2;
       break;
     case CACHE_SWAP_MINE:
+//      cout << (set_base>>5) << endl;
       lirs[set_base>>5].insert(caches[set_base + index].tag,index);
       break;
   }
@@ -267,6 +269,7 @@ int CacheSim::cache_find_victim(_u64 set_base, int a_swap_style, int hit_index) 
       }
       break;
       case CACHE_SWAP_MINE:
+//        cout << (set_base>>5) << endl;
         free_index = lirs[set_base>>5].victim();
         break;
   }
@@ -340,12 +343,14 @@ void CacheSim::dump_cache_set_info(_u64 set_base) {
   printf("\n");
 }
 
+static int op_times;
 /**不需要分level*/
 void CacheSim::do_cache_op(_u64 addr, char oper_style) { //这也就是trace的前2个参数
+//  if(op_times<50000)cout << ++op_times << ' ' << << endl;
+//  ,hit_rate:%f=100.0*cache_hit_count/(cache_hit_count + cache_miss_count)
   //仅仅是根据指令是读还是写
   _u64 set, set_base;
   int hit_index, free_index;
-
   tick_count++;
   if (oper_style == OPERATION_READ) cache_r_count++;
   if (oper_style == OPERATION_WRITE) cache_w_count++;
@@ -356,6 +361,7 @@ void CacheSim::do_cache_op(_u64 addr, char oper_style) { //这也就是trace的�
   hit_index = cache_check_hit(set_base, addr);//set内line的偏移地址 0-7
 
   int temp_swap_style = swap_style;
+  printf("line=%d,addr=%.8llx,set=%.8llx\n",++op_times,addr,set);
   int set_flag = get_set_flag(set); //返回当前set是否为sample set
   if (swap_style == CACHE_SWAP_DRRIP) {
     /**是否是sample set*/
@@ -552,7 +558,7 @@ void CacheSim::load_trace(const char *filename) {
       strcpy(a_swap_style, "DRRIP");
       break;
     case CACHE_SWAP_MINE:
-      strcpy(a_swap_style, "LRU");
+      strcpy(a_swap_style, "LIRS");
       break;
   }
   printf("cache_repl_policy:%s", a_swap_style);

@@ -25,8 +25,8 @@ public:
      */
     LIRS() {
       //因为是32路组相连，和为32
-      S_size_limit = 30;
-      Q_size_limit = 2;
+      S_size_limit = 31;
+      Q_size_limit = 1;
       cur_S_size = 0;
     }
     unordered_map<_u16, list<Node>::iterator> ms;
@@ -70,7 +70,6 @@ public:
           //此操作不改变S的size
           S.splice(S.begin(),S,l_it);
           ms[tag]=S.begin();
-          bool end = (l_it==--S.end());
           prune_S();
         } else {
           //是HIR但是在S中
@@ -138,6 +137,7 @@ public:
      */
     _u8 victim() {
       //无论如何，都得撵走队首，不过，它已经在cache中走了，但这里还得收拾，但是只有在size超了的时候才需要撵走
+      printf("Qsize:%lu\n",Q.size());
       assert(Q.size() >= Q_size_limit);
       auto tmp = Q.front().index;
       Q.pop_front();
