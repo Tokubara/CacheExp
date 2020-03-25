@@ -2,21 +2,21 @@
 #include <cstring>
 #include <stdlib.h>
 #include "CacheSim.h"
-#include "argparse.hpp"
+//#include "argparse.hpp"
 
 using namespace std;
 
 int main(const int argc, const char *argv[]) {
 
     //以下为固定的测试
-    ArgumentParser parser;
-
-    parser.addArgument("-i", "--input", 1, false);//trace的地址
-    parser.addArgument("--l1", 1, true);
-    parser.addArgument("--l2", 1, true);
-    parser.addArgument("--line_size", 1, true);
-    parser.addArgument("--ways", 1, true);
-    parser.parse(argc, argv);
+//    ArgumentParser parser;
+//
+//    parser.addArgument("-i", "--input", 1, false);//trace的地址
+//    parser.addArgument("--l1", 1, true);
+//    parser.addArgument("--l2", 1, true);
+//    parser.addArgument("--line_size", 1, true);
+//    parser.addArgument("--ways", 1, true);
+//    parser.parse(argc, argv);
 
     CacheSim cache;
     /**cache有关的参数*/
@@ -44,7 +44,7 @@ int main(const int argc, const char *argv[]) {
                         temp_swap_style = swap_style[n];
                         cache.init(temp_cache_size, temp_line_size, temp_ways, temp_swap_style);
                         cache.set_M(ms[k]);
-                        cache.load_trace(parser.retrieve<string>("input").c_str());
+                        cache.load_trace("./input0.txt");
                         cache.re_init();
                     }
                 }
