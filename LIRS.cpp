@@ -1,16 +1,17 @@
-#include <assert.h>
+#include <cstdio>
 #include <unordered_map>
+#include <assert.h>
 #include <list>
+#include <iostream>
 using namespace std;
 
-typedef unsigned long long _u64;
 typedef unsigned short _u16;
 typedef unsigned char _u8;
-
 //链表节点
 struct Node {
     bool l; //是否是l状态，有可能是h
     _u8 index;
+    _u16 tag;
 };
 
 /**
@@ -23,15 +24,16 @@ public:
      * 这里暂时把size写死了，没办法，32路组相联，这多小，如果真按推荐的0.1的比例，那F根本就是0
      */
     LIRS() {
+      //因为是32路组相连，和为32
       S_size_limit = 30;
       Q_size_limit = 2;
       cur_S_size = 0;
     }
-    unordered_map<_u64, list<Node>::iterator> ms;
-    unordered_map<_u64, list<Node>::iterator> mq;
-    _u64 S_size_limit;
-    _u64 Q_size_limit;
-    _u64 cur_S_size;
+    unordered_map<_u16, list<Node>::iterator> ms;
+    unordered_map<_u16, list<Node>::iterator> mq;
+    _u8 S_size_limit;
+    _u8 Q_size_limit;
+    _u8 cur_S_size;
     list<Node> S;
     list<Node> Q;
     /**
@@ -40,7 +42,7 @@ public:
     void prune_S() {
       //cur_S_size不变
       while(!S.empty() && !S.back().l) {
-        ms.erase(S.back().index);
+        ms.erase(S.back().tag);
         S.pop_back();
       }
     }
@@ -49,17 +51,17 @@ public:
      */
     void drop_S_end() {
       if(S.empty()) return;  //TODO 有这种可能么？我感觉发生这种情况就挺奇怪的
-      auto end = S.back();
+      auto &end = S.back();
       end.l = false;
-      ms.erase(end.index);
+      ms.erase(end.tag);
       cur_S_size--;
       Q.splice(Q.end(),S,--S.end());
-      mq[end.index]=--Q.end();
+      mq[end.tag]=--Q.end();
       prune_S();
     }
-    void hit(_u64 index) {
-      //index表示set_base+index，也就是在cache数组中的下标
-      auto it = ms.find(index);
+    void hit(_u16 tag) {
+      //tag表示set_base+tag，也就是在cache数组中的下标
+      auto it = ms.find(tag);
       list<Node>::iterator l_it;
       if(it!=ms.end()) {
         //在S中
@@ -67,7 +69,8 @@ public:
         if(l_it->l) {
           //此操作不改变S的size
           S.splice(S.begin(),S,l_it);
-          ms[index]=S.begin();
+          ms[tag]=S.begin();
+          bool end = (l_it==--S.end());
           prune_S();
         } else {
           //是HIR但是在S中
@@ -79,26 +82,26 @@ public:
           } else {
             cur_S_size++;
           }
-          Q.erase(mq[index]);  //也因此腾了一个空间
-          ms[index]=S.begin();
-          mq.erase(index);
+          Q.erase(mq[tag]);  //也因此腾了一个空间
+          ms[tag]=S.begin();
+          mq.erase(tag);
         }
       } else {
         //不在S中，必在H中
         //不涉及size的改变
-        l_it = mq.find(index)->second;
+        l_it = mq.find(tag)->second;
         S.push_front(*l_it);  //已经放在S栈顶上了
-        ms[index]=S.begin();
+        ms[tag]=S.begin();
         Q.splice(Q.end(),Q,l_it);
-        mq[index]=(--Q.end());
+        mq[tag]=(--Q.end());
       }
     }
     /**
      * 在需要更新指标的时候调用
-     * @param index
+     * @param tag
      */
-    void insert(_u64 index) {
-      auto it = ms.find(index);
+    void insert(_u16 tag, _u8 index) {
+      auto it = ms.find(tag);
       Node node;
       list<Node>::iterator l_it;
       if(it!=ms.end()) {
@@ -111,20 +114,21 @@ public:
         } else {
           cur_S_size++;
         }
-        ms[index]=S.begin();
+        ms[tag]=S.begin();
       } else {
+        node.tag = tag;
         node.index = index;
         if(cur_S_size>=S_size_limit) {
           node.l = false;
           Q.push_back(node);
-          mq[index] = (--Q.end());
+          mq[tag] = (--Q.end());
           S.push_front(node);
-          ms[index] = S.begin();
+          ms[tag] = S.begin();
         } else {
           node.l = true;
           S.push_front(node);
           cur_S_size++;
-          ms[index] = S.begin();
+          ms[tag] = S.begin();
         }
       }
     }
@@ -132,7 +136,7 @@ public:
      * 返回victim的，也更改victim
      * @return front的index，并不是-set_base的，这里当然没有减去set_base
      */
-    _u64 victim() {
+    _u8 victim() {
       //无论如何，都得撵走队首，不过，它已经在cache中走了，但这里还得收拾，但是只有在size超了的时候才需要撵走
       assert(Q.size() >= Q_size_limit);
       auto tmp = Q.front().index;
@@ -140,14 +144,7 @@ public:
       mq.erase(tmp);
       return tmp;
     }
-    bool exist(_u64 index) {
-      return (mq.find(index)!=mq.end()||(ms.find(index)!=ms.end() && ms.find(index)->second->l));
-    }
-    void op(_u64 index) {
-      if(exist(index)) {
-        hit(index);
-      } else {
-        insert(index);
-      }
-    }
+//    bool exist(_u16 index) {
+//      return (mq.find(index)!=mq.end()||(ms.find(index)!=ms.end() && ms.find(index)->second->l));
+//    }
 };

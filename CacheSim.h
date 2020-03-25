@@ -33,7 +33,7 @@ enum cache_swap_style {
     CACHE_SWAP_SRRIP_FP,
     CACHE_SWAP_BRRIP,
     CACHE_SWAP_DRRIP,
-    CACHE_MINE
+    CACHE_SWAP_MINE
 };
 
 
@@ -51,6 +51,7 @@ public:
     /**真正的cache地址列。指针数组*/
     Cache_Line *caches;
     /**cache的总大小，单位byte*/
+    LIRS *lirs;
     _u64 cache_size;
     /**cache line(Cache block)cache块的大小*/
     _u64 cache_line_size;
