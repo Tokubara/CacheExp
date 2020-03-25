@@ -4,6 +4,7 @@
 //
 #ifndef CACHE_SIM 
 #define CACHE_SIM
+//TODO 这里不知道有没有问题先注释掉，因为LIRS.cpp也定义了下面这些
 typedef unsigned char _u8;
 typedef unsigned int _u32;
 typedef unsigned long long _u64;
@@ -17,10 +18,11 @@ const char OPERATION_WRITE = 's';
 
 #include "map"
 #include<iostream>
-#include<vector>
+#include <vector>
 #include <assert.h>
 #include <list>
 #include <unordered_map>
+#include "LIRS.cpp"
 
 /**替换算法*/
 enum cache_swap_style {
@@ -30,8 +32,10 @@ enum cache_swap_style {
     CACHE_SWAP_SRRIP,
     CACHE_SWAP_SRRIP_FP,
     CACHE_SWAP_BRRIP,
-    CACHE_SWAP_DRRIP
+    CACHE_SWAP_DRRIP,
+    CACHE_MINE
 };
+
 
 class Cache_Line {
 public:

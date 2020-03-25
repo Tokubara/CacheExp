@@ -3,8 +3,12 @@
 
 CMakeFiles/CacheSim.dir/CacheSim.cpp.o: CacheSim.cpp
 CMakeFiles/CacheSim.dir/CacheSim.cpp.o: CacheSim.h
+CMakeFiles/CacheSim.dir/CacheSim.cpp.o: LIRS.cpp
+
+CMakeFiles/CacheSim.dir/LIRS.cpp.o: LIRS.cpp
 
 CMakeFiles/CacheSim.dir/main.cpp.o: CacheSim.h
+CMakeFiles/CacheSim.dir/main.cpp.o: LIRS.cpp
 CMakeFiles/CacheSim.dir/main.cpp.o: argparse.hpp
 CMakeFiles/CacheSim.dir/main.cpp.o: main.cpp
 

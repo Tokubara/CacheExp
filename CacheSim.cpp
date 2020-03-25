@@ -149,7 +149,6 @@ int CacheSim::cache_get_free_line(_u64 set_base) {
 
 /**Normal Cache命中，更新Cache状态*/
 void CacheSim::cache_hit(_u64 set_base, _u64 index, int a_swap_style) {
-
         switch (a_swap_style) {
                 case CACHE_SWAP_LRU:
                     for (_u64 j = 0; j < cache_mapping_ways; ++j) {
@@ -171,6 +170,7 @@ void CacheSim::cache_hit(_u64 set_base, _u64 index, int a_swap_style) {
                         caches[set_base + index].RRPV -= 1;
                     }
                     break;
+//                case CACHE_MINE:
         }
 }
 
@@ -258,6 +258,7 @@ int CacheSim::cache_find_victim(_u64 set_base , int a_swap_style, int hit_index)
                 }
             }
             break;
+//      case CACHE_MINE:
    }
 
    if (free_index >= 0) {
@@ -330,7 +331,7 @@ void CacheSim::dump_cache_set_info(_u64 set_base) {
 }
 
 /**不需要分level*/
-void CacheSim::do_cache_op(_u64 addr, char oper_style) {
+void CacheSim::do_cache_op(_u64 addr, char oper_style) { //这也就是trace的前2个参数
   //仅仅是根据指令是读还是写
     _u64 set, set_base;
     int hit_index, free_index;
