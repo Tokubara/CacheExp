@@ -1,9 +1,7 @@
 file(REMOVE_RECURSE
   "CMakeFiles/CacheSim.dir/main.cpp.o"
-  "CMakeFiles/CacheSim.dir/CacheSim.cpp.o"
-  "CMakeFiles/CacheSim.dir/LIRS.cpp.o"
-  "CacheSim.pdb"
   "CacheSim"
+  "CacheSim.pdb"
 )
 
 # Per-language clean rules from dependency scanning.
