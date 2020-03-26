@@ -634,7 +634,7 @@ void CacheSim::dump_cache_set_info(_u64 set_base) {
   printf("\n");
 }
 
-static int op_times;
+//static int op_times;
 /**不需要分level*/
 void CacheSim::do_cache_op(_u64 addr, char oper_style) { //这也就是trace的前2个参数
 //  if(op_times<50000)cout << ++op_times << ' ' << << endl;
@@ -652,7 +652,7 @@ void CacheSim::do_cache_op(_u64 addr, char oper_style) { //这也就是trace的�
   hit_index = cache_check_hit(set_base, addr);//set内line的偏移地址 0-7
 
   int temp_swap_style = swap_style;
-  printf("line=%d,addr=%.8llx,set=%.8llx\n",++op_times,addr,set);
+  printf("line=%d,addr=%.8llx,set=%.8llx\n",tick_count,addr,set);
   int set_flag = get_set_flag(set); //返回当前set是否为sample set
   if (swap_style == CACHE_SWAP_DRRIP) {
     /**是否是sample set*/
