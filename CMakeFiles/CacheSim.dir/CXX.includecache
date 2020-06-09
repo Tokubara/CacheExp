@@ -6,6 +6,18 @@
 
 #IncludeRegexTransform: 
 
+/Users/quebec/Documents/Project/cache_src/CacheExpSrc/LIRS.cpp
+cstdio
+-
+unordered_map
+-
+assert.h
+-
+list
+-
+iostream
+-
+
 /Users/quebec/Documents/Project/cache_src/CacheExpSrc/main.cpp
 iostream
 -
@@ -53,4 +65,6 @@ algorithm
 -
 string
 -
+LIRS.cpp
+/Users/quebec/Documents/Project/cache_src/CacheExpSrc/LIRS.cpp
 

@@ -273,7 +273,7 @@ void CacheSim::re_init() {
   cache_miss_count = 0;
   memset(caches, 0, sizeof(Cache_Line) * cache_line_num);
 //  lirs = new LIRS[cache_set_size];
-  for(int i = 0; i < 2056; i++) {
+  for(int i = 0; i < 2048; i++) {
     lirs[i] = LIRS();
   }
 }
@@ -778,6 +778,7 @@ int main(const int argc, const char *argv[]) {
             for (j = 0; j < sizeof(ways) / sizeof(_u64); j++) {
                 for (k = 0; k < sizeof(ms) / sizeof(int); k++) {
                    for (n = 0; n < sizeof(swap_style) / sizeof(cache_swap_style); n++) {
+//                        printf("begin\n");
                         _u64 temp_cache_size, temp_line_size, temp_ways;
                         cache_swap_style temp_swap_style;
 
@@ -788,7 +789,9 @@ int main(const int argc, const char *argv[]) {
                         cache.init(temp_cache_size, temp_line_size, temp_ways, temp_swap_style);
                         cache.set_M(ms[k]);
                         cache.load_trace("./input0.txt");
+//                        printf("end\n");
                         cache.re_init();
+//                        printf("end\n");
                     }
                 }
             }
