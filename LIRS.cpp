@@ -49,12 +49,12 @@ public:
       }
     }
     /**
-     * 把S的最后一个挪到Q的end
+     * 把S的底部挪到Q的end
      */
     void drop_S_end() {
       assert(cur_S_size<=S_size_limit);
       assert(Q.size()<=Q_size_limit);
-      if(S.empty()) return;  //TODO 有这种可能么？我感觉发生这种情况就挺奇怪的
+      if(S.empty()) return;
       auto &end = S.back();
       end.l = false;
       ms.erase(end.tag);
@@ -81,17 +81,11 @@ public:
           //是HIR但是在S中
           l_it->l = true;
           S.splice(S.begin(),S,l_it);
-          Q.erase(mq[tag]);  //也因此腾了一个空间
-          //TODO 感觉if的else情况与在Q中不会同时发生，因此else也许是多余的
-//          if(cur_S_size>=S_size_limit) {
-            drop_S_end(); //这样cur_S_size不变
-//          } else {
-//            cur_S_size++;
-//          }
-
           ms[tag]=S.begin();
-
+          Q.erase(mq[tag]);  //!!这里出了问题
           mq.erase(tag);
+          assert(cur_S_size==S_size_limit);
+          drop_S_end();
         }
       } else {
         //不在S中，必在H中
@@ -113,30 +107,16 @@ public:
       assert(Q.size()<Q_size_limit);
       auto it = ms.find(tag);
       list<Node>::iterator l_it;
-//      if(cur_S_size<S_size_limit) {
-//        node.l=true;
-//        node.tag = tag;
-//        S.push_front(node);
-//        cur_S_size++;
-//        return;
-//      }
-/*      if(Q.size()==Q_size_limit) {
-        Q.
-      }*/
-//一定不在Q中，而且Q一定会走一个(除非是刚开始或者Q还没有满的情况)
+//一定不在Q中，而且Q一定会走一个(除非是刚开始或者Q还没有满的情况)，但这不是insert的事，是victim的事
       if(it!=ms.end()) {
         //如果在S中，复制hit中的if中的else，去掉与Q相关的
         l_it = it->second;
         l_it->l = true;
+        l_it->index = index;
+        //不在Q中不需要对Q做擦除
         S.splice(S.begin(),S,l_it);
-//        if(cur_S_size>=S_size_limit) {
-        //凡是在S中却不是l的，必然S已满，所以不需要判断
-          drop_S_end();
-//        } else {
-//          cur_S_size++;
-//        }
         ms[tag]=S.begin();
-          //TODO 对Q做处理，目前是希望放在一起，这样Q没满的时候统一判断
+        drop_S_end();
       } else {
         Node node;
         node.tag = tag;
@@ -146,14 +126,16 @@ public:
           node.l = false;
           Q.push_back(node);
           mq[tag] = (--Q.end());
-//          S.push_front(node);
-//          ms[tag] = S.begin();
+          S.push_front(node);
+          ms[tag] = S.begin();
         } else {
+          //开始阶段
           node.l = true;
           S.push_front(node);
+          ms[tag] = S.begin();
           cur_S_size++;
         }
-        ms[tag] = S.begin();
+
       }
     }
     /**
@@ -162,12 +144,10 @@ public:
      */
     _u8 victim() {
       //无论如何，都得撵走队首，不过，它已经在cache中走了，但这里还得收拾，但是只有在size超了的时候才需要撵走
-//      printf("Qsize:%lu\n",Q.size());
-//      assert(Q.size() >= Q_size_limit);
       auto tmp = Q.front();
       Q.pop_front();
       mq.erase(tmp.tag);
-      return tmp.index;  //不知道为啥这里之前写的index
+      return tmp.index;  //要返回的是在组中的位置
     }
 //    bool exist(_u16 index) {
 //      return (mq.find(index)!=mq.end()||(ms.find(index)!=ms.end() && ms.find(index)->second->l));

@@ -155,7 +155,7 @@ public:
     /**判断当前set是不是选中作为sample的set，并返回给当前set设置的policy*/
     int get_set_flag(_u64 set_base);
     void re_init();
-    LIRS lirs[2048];
+    LIRS lirs[2050];
 };
 
 
@@ -273,7 +273,7 @@ void CacheSim::re_init() {
   cache_miss_count = 0;
   memset(caches, 0, sizeof(Cache_Line) * cache_line_num);
 //  lirs = new LIRS[cache_set_size];
-  for(int i = 0; i < 2048; i++) {
+  for(int i = 0; i < 2050; i++) {
     lirs[i] = LIRS();
   }
 }
@@ -788,7 +788,7 @@ int main(const int argc, const char *argv[]) {
                         temp_swap_style = swap_style[n];
                         cache.init(temp_cache_size, temp_line_size, temp_ways, temp_swap_style);
                         cache.set_M(ms[k]);
-                        cache.load_trace("./input0.txt");
+                        cache.load_trace("/Users/quebec/Documents/Materials/大三下/系统/trace1/fortnite60fps_b620_1.txt");
 //                        printf("end\n");
                         cache.re_init();
 //                        printf("end\n");
