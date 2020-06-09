@@ -108,8 +108,9 @@ public:
      * @param tag
      */
     void insert(_u16 tag, _u8 index) {
-      assert(cur_S_size<S_size_limit); //调用这个函数的时候，一定victim已经被调用了，因为victim负责清除
-      assert(Q.size()<=Q_size_limit);
+      printf("cur_S_size=%d\n",cur_S_size);
+      assert(cur_S_size<=S_size_limit); //调用这个函数的时候，一定victim已经被调用了，因为victim负责清除
+      assert(Q.size()<Q_size_limit);
       auto it = ms.find(tag);
       list<Node>::iterator l_it;
 //      if(cur_S_size<S_size_limit) {
@@ -150,8 +151,8 @@ public:
         } else {
           node.l = true;
           S.push_front(node);
+          cur_S_size++;
         }
-        cur_S_size++;
         ms[tag] = S.begin();
       }
     }
