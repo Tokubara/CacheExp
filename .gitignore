@@ -1,11 +1,7 @@
 # FindHao add:
 .idea/*
-input
+# input
 cmake-build-debug/*
-<<<<<<< HEAD
 cmake-build-release/*
 将删除 .idea/
 将删除 cmake-build-debug/
-=======
-
->>>>>>> b85a6e4cf3faad87a5d7635b883efe51b4b71d44

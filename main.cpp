@@ -183,7 +183,6 @@ CacheSim::CacheSim() {}
 /**@arg a_cache_size[] 多级cache的大小设置
  * @arg a_cache_line_size[] 多级cache的line size（block size）大小
  * @arg a_mapping_ways[] 组相连的链接方式*/
-//?为什么这里不用实现好的?
 _u32 CacheSim::pow_int(int base, int expontent) {
   _u32 sum = 1;
   for (int i = 0; i < expontent; i++) {
@@ -251,7 +250,6 @@ void CacheSim::init(_u64 a_cache_size, _u64 a_cache_line_size, _u64 a_mapping_wa
 
   // 为每一行分配空间
   caches = (Cache_Line *) malloc(sizeof(Cache_Line) * cache_line_num);
-//  lirs = new LIRS[cache_set_size];
   memset(caches, 0, sizeof(Cache_Line) * cache_line_num);
 
   for (int i = 0; i < cache_set_size; ++i)
@@ -285,9 +283,9 @@ CacheSim::~CacheSim() {
 int CacheSim::cache_check_hit(_u64 set_base, _u64 addr) {
   /**循环查找当前set的所有way（line），通过tag匹配，查看当前地址是否在cache中*/
   _u64 i;
-  _u64 tag = addr >> (cache_set_shifts + cache_line_shifts);
   for (i = 0; i < cache_mapping_ways; ++i) {
-    if ((caches[set_base + i].flag & CACHE_FLAG_VALID) && (caches[set_base + i].tag == tag)) {
+        if ((caches[set_base + i].flag & CACHE_FLAG_VALID) &&
+            (caches[set_base + i].tag == ((addr >> (cache_set_shifts + cache_line_shifts))))) {
       return i; //返回line在set内的偏移地址
     }
   }
@@ -309,8 +307,7 @@ void CacheSim::cache_hit(_u64 set_base, _u64 index, int a_swap_style) {
   switch (a_swap_style) {
     case CACHE_SWAP_LRU:
       for (_u64 j = 0; j < cache_mapping_ways; ++j) {
-        if ((caches[set_base + j].LRU < caches[set_base + index].LRU) &&
-            (caches[set_base + j].flag & CACHE_FLAG_VALID)) {
+                        if ((caches[set_base + j].LRU < caches[set_base + index].LRU) && (caches[set_base + j].flag & CACHE_FLAG_VALID)) {
           caches[set_base + j].LRU++;
         }
       }
@@ -341,8 +338,7 @@ void CacheSim::cache_insert(_u64 set_base, _u64 index, int a_swap_style) {
   switch (a_swap_style) {
     case CACHE_SWAP_LRU:
       for (_u64 j = 0; j < cache_mapping_ways; ++j) {
-        if ((caches[set_base + j].LRU < caches[set_base + index].LRU) &&
-            (caches[set_base + j].flag & CACHE_FLAG_VALID)) {
+                        if ((caches[set_base + j].LRU < caches[set_base + index].LRU) && (caches[set_base + j].flag & CACHE_FLAG_VALID)) {
           caches[set_base + j].LRU++;
         }
       }
@@ -380,7 +376,7 @@ int CacheSim::cache_find_victim(_u64 set_base, int a_swap_style, int hit_index) 
   }
 
   /**没有可用line，则执行替换算法*/
-//    free_index = -1; // 这句话是多余的
+    free_index = -1;
   switch (a_swap_style) {
     case CACHE_SWAP_RAND:
       free_index = rand() % cache_mapping_ways;
@@ -517,7 +513,7 @@ void CacheSim::do_cache_op(_u64 addr, char oper_style) { //这也就是trace的�
   hit_index = cache_check_hit(set_base, addr);//set内line的偏移地址 0-7
 
   int temp_swap_style = swap_style;
-  printf("line=%d,addr=%.8llx,set=%.8llx\n",tick_count,addr,set);
+//  printf("line=%d,addr=%.8llx,set=%.8llx\n",tick_count,addr,set);
   int set_flag = get_set_flag(set); //返回当前set是否为sample set
   if (swap_style == CACHE_SWAP_DRRIP) {
     /**是否是sample set*/
@@ -688,8 +684,7 @@ void CacheSim::load_trace(const char *filename) {
   }
 
   printf("\n========================================================\n");
-  printf("cache_size: %lld, cache_line_size:%lld, cache_set_size:%lld, mapping_ways:%lld, ", cache_size,
-         cache_line_size, cache_set_size, cache_mapping_ways);
+    printf("cache_size: %lld, cache_line_size:%lld, cache_set_size:%lld, mapping_ways:%lld, ", cache_size, cache_line_size, cache_set_size, cache_mapping_ways);
   char a_swap_style[99];
   switch (swap_style) {
     case CACHE_SWAP_RAND:
@@ -736,14 +731,12 @@ void CacheSim::load_trace(const char *filename) {
          cache_hit_count, cache_miss_count,
          100.0 * cache_hit_count / (cache_hit_count + cache_miss_count),
          100.0 * cache_miss_count / (cache_hit_count + cache_miss_count));
-  printf("read hit count in cache %lld\tmiss count in cache %lld\nwrite hit count in cache %lld\tmiss count in cache %lld\n",
-         cache_r_hit_count, cache_r_miss_count, cache_w_hit_count, cache_w_miss_count);
+    printf("read hit count in cache %lld\tmiss count in cache %lld\nwrite hit count in cache %lld\tmiss count in cache %lld\n", cache_r_hit_count, cache_r_miss_count, cache_w_hit_count, cache_w_miss_count);
   printf("Write through:\t%d\twrite allocation:\t%d\n", write_through, write_allocation);
   printf("Memory --> Cache:\t%.4fGB\nCache --> Memory:\t%.4fMB\ncache sum:\t%.4fGB\n",
          cache_r_memory_count * cache_line_size * 1.0 / 1024 / 1024 / 1024,
          cache_w_memory_count * cache_line_size * 1.0 / 1024 / 1024,
-         (cache_r_memory_count * cache_line_size * 1.0 / 1024 / 1024 / 1024) +
-         cache_w_memory_count * cache_line_size * 1.0 / 1024 / 1024 / 1024); //cache sum：经过cache操作的流量总和
+           (cache_r_memory_count * cache_line_size * 1.0 / 1024 / 1024 / 1024)+cache_w_memory_count * cache_line_size * 1.0 / 1024 / 1024/ 1024); //cache sum：经过cache操作的流量总和
 
   fclose(fin);
 }
@@ -788,7 +781,7 @@ int main(const int argc, const char *argv[]) {
                         temp_swap_style = swap_style[n];
                         cache.init(temp_cache_size, temp_line_size, temp_ways, temp_swap_style);
                         cache.set_M(ms[k]);
-                        cache.load_trace("/Users/quebec/Documents/Materials/大三下/系统/trace1/fortnite60fps_b620_1.txt");
+                        cache.load_trace("/Users/quebec/Documents/Materials/大三下/系统/trace2/wangzherongyao60fps_b620_2.txt");
 //                        printf("end\n");
                         cache.re_init();
 //                        printf("end\n");

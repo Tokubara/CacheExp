@@ -5,13 +5,13 @@
 #include <iostream>
 using namespace std;
 
-typedef unsigned short _u16;
+typedef unsigned long long _u64;
 typedef unsigned char _u8;
 //链表节点
 struct Node {
     bool l; //是否是l状态，有可能是h
     _u8 index;
-    _u16 tag;
+    _u64 tag;
 };
 
 /**
@@ -29,8 +29,8 @@ public:
       Q_size_limit = 2;
       cur_S_size = 0;
     }
-    unordered_map<_u16, list<Node>::iterator> ms;
-    unordered_map<_u16, list<Node>::iterator> mq;
+    unordered_map<_u64, list<Node>::iterator> ms;
+    unordered_map<_u64, list<Node>::iterator> mq;
     _u8 S_size_limit;
     _u8 Q_size_limit;
     _u8 cur_S_size;
@@ -63,7 +63,7 @@ public:
       mq[end.tag]=--Q.end();
       prune_S();
     }
-    void hit(_u16 tag) {
+    void hit(_u64 tag) {
       assert(cur_S_size<=S_size_limit);
       assert(Q.size()<=Q_size_limit);
       //tag表示set_base+tag，也就是在cache数组中的下标
@@ -101,7 +101,7 @@ public:
      * 在需要更新指标的时候调用
      * @param tag
      */
-    void insert(_u16 tag, _u8 index) {
+    void insert(_u64 tag, _u8 index) {
 //      printf("cur_S_size=%d\n",cur_S_size);
       assert(cur_S_size<=S_size_limit); //调用这个函数的时候，一定victim已经被调用了，因为victim负责清除
       assert(Q.size()<Q_size_limit);
